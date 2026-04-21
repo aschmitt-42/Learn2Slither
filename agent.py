@@ -1,3 +1,4 @@
+import json
 import random
 
 UP    = (-1,0)
@@ -10,7 +11,7 @@ class Agent:
 		self.alpha = 0.1    # Learning rate
 		self.gamma = 0.9    # Discount factor
 		self.epsilon = 1.0  # Exploration au départ
-		self.epsilon_decay = 0.999
+		self.epsilon_decay =  0.99988 
 		self.epsilon_min = 0.01
 		self.Q_table = {}   # état: [q_up, q_down, q_left, q_right]
 	
@@ -34,4 +35,16 @@ class Agent:
 		else:
 			target = reward + self.gamma * max(self.get_q(next_state))
 		self.Q_table[state][action] = curent_q + self.alpha * (target - curent_q)
+		# self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
+	
+	def save(self, path):
+		serializable_q_table = {str(key): value for key, value in self.Q_table.items()}
+		with open(path, "w", encoding="utf-8") as file:
+			json.dump(serializable_q_table, file, indent=4)
+
+	def load(self, path):
+		with open(path, "r", encoding="utf-8") as file:
+			loaded_q_table = json.load(file)
+
+		self.Q_table = {eval(key): value for key, value in loaded_q_table.items()}
 		

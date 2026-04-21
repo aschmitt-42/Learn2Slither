@@ -11,6 +11,8 @@ REWARD_RED_APPLE    = -5
 REWARD_DEAD         = -50
 REWARD_NOTHING      = -0.1
 
+FREE_SPACE = "0"
+
 class Board:
     def __init__(self, rows=10, cols=10):
         self.rows = rows
@@ -73,7 +75,7 @@ class Board:
                 elif pos in self.green_apples:
                     line += "G"
                 else:
-                    line += "." # 0
+                    line += FREE_SPACE
             line += 'W'
             print(line)
         print("W" * (self.cols + 2))
@@ -120,7 +122,7 @@ class Board:
             return "R"
         if pos in self.green_apples:
             return "G"
-        return "."
+        return FREE_SPACE
 
     def get_rayons(self):
         if (len(self.snake) == 0):
@@ -156,10 +158,20 @@ class Board:
         return rays
     
     def get_state(self):
-        r = self.get_rayons()
-        if (r == None):
+        if (len(self.snake) == 0):
             return None
-        return (r["NORD"][0], r["SUD"][0], r["OUEST"][0], r["EST"][0], self.get_current_direction())
+        r = self.get_rayons()
+        def pad(ray, n=3):
+            extended = ray + ['W'] * n
+            return tuple(extended[:n])
+        return (
+            *pad(r["NORD"]),
+            *pad(r["SUD"]),
+            *pad(r["OUEST"]),
+            *pad(r["EST"]),
+            self.get_current_direction()
+        )
+        # return (r["NORD"], r["SUD"], r["OUEST"], r["EST"], self.get_current_direction())
 
     def display_vision(self, action):
         print(action, "\n")
