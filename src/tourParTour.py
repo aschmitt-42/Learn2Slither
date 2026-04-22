@@ -137,7 +137,7 @@ class SnakeVisualizer:
         pygame.quit()
 
 
-def play_visual(agent, board=None, step_by_step=False, max_steps=500):
+def play_visual(agent, board=None, step_by_step=True, max_steps=500):
     """
     Lance la visualisation graphique d'une partie de snake
     
